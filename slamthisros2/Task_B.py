@@ -31,11 +31,16 @@ class TaskB(Node):
         # Yaw is in radians.
         # ----------------------------------------------
 
+        # Map-frame staging positions. These are NOT the final dock goals.
+        # Marker 5 pose was demonstrated to work in Gazebo; others are
+        # candidate poses requiring navigation and camera visibility tests.
+        # yaw is in radians, not degrees.
         self.goals = {
-            0: (3, -0.3, 0.0),
-            1: (3, -0.6, 0.0),
-            2: (3, -0.9, 0.0),
-            3: (3, -1.1, 0.0),
+            1: (2.80, -0.43, math.radians(20.0)),
+            2: (2.80, -0.29, math.radians(-20.0)),
+            3: (2.80, -1.14, math.radians(20.0)),
+            4: (2.80, -1.02, math.radians(-20.0)),
+            5: (2.80, -1.37, math.radians(-20.0)),
         }
 
         # ----------------------------------------------
@@ -90,7 +95,7 @@ class TaskB(Node):
             self.get_logger().error(
                 f'No goal configured for ArUco ID {self.marker_id}'
             )
-            self.state = 'FAILED'
+            self.state = 'ERROR'
         else:
             self.start_forward()
 
@@ -138,7 +143,7 @@ class TaskB(Node):
     def update_motion(self):
         if self.motion_start_time is None:
             self.stop_robot()
-            self.state = 'FAILED'
+            self.state = 'ERROR'
             return
 
         elapsed = (
@@ -214,14 +219,14 @@ class TaskB(Node):
             self.get_logger().error(
                 f'Failed to send navigation goal: {exc}'
             )
-            self.state = 'FAILED'
+            self.state = 'ERROR'
             return
 
         if not self.goal_handle.accepted:
             self.get_logger().error(
                 'Nav2 rejected the goal.'
             )
-            self.state = 'FAILED'
+            self.state = 'ERROR'
             return
 
         self.get_logger().info(
@@ -261,7 +266,7 @@ class TaskB(Node):
                 f'Failed to retrieve navigation result: {exc}'
             )
             self.stop_robot()
-            self.state = 'FAILED'
+            self.state = 'ERROR'
             return
 
         if result.status == GoalStatus.STATUS_SUCCEEDED:
@@ -279,7 +284,7 @@ class TaskB(Node):
             )
 
             self.stop_robot()
-            self.state = 'FAILED'
+            self.state = 'ERROR'
 
     # ==============================================
     # VELOCITY CONTROL
@@ -318,15 +323,16 @@ def main(args=None):
 
     rclpy.init(args=args)
 
-    # Example only.
-    # Normally main_control.py passes the ArUco ID
-    # detected by Task A.
-    task = TaskB(marker_id=0)
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--marker-id', type=int, default=1, choices=range(1, 6))
+    args = parser.parse_args()
+    task = TaskB(marker_id=args.marker_id)
 
     try:
         while (
             rclpy.ok()
-            and task.state not in ('COMPLETE', 'FAILED')
+            and task.state not in ('COMPLETE', 'ERROR')
         ):
             rclpy.spin_once(
                 task,

@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>slamthisros2</name>
+  <version>0.1.0</version>
+
+  <description>
+    TurtleBot3 stadium controller implementing Tasks A, B, and C.
+  </description>
+
+  <maintainer email="waiyanlynnmyint@outlook.com">waiyanlynnmyint</maintainer>
+  <license>Apache-2.0</license>
+
+  <buildtool_depend>ament_python</buildtool_depend>
+
+  <exec_depend>rclpy</exec_depend>
+  <exec_depend>geometry_msgs</exec_depend>
+  <exec_depend>sensor_msgs</exec_depend>
+  <exec_depend>nav_msgs</exec_depend>
+  <exec_depend>nav2_msgs</exec_depend>
+  <exec_depend>action_msgs</exec_depend>
+  <exec_depend>cv_bridge</exec_depend>
+
+  <exec_depend>ament_index_python</exec_depend>
+  <exec_depend>launch</exec_depend>
+  <exec_depend>launch_ros</exec_depend>
+  <exec_depend>ros2launch</exec_depend>
+
+  <exec_depend>gazebo_ros</exec_depend>
+  <exec_depend>turtlebot3_gazebo</exec_depend>
+  <exec_depend>navigation2</exec_depend>
+  <exec_depend>nav2_bringup</exec_depend>
+  <exec_depend>turtlebot3_navigation2</exec_depend>
+  <exec_depend>tf2_ros</exec_depend>
+
+  <exec_depend>python3-numpy</exec_depend>
+  <exec_depend>python3-opencv</exec_depend>
+  <exec_depend>python3-pyzbar</exec_depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>
